@@ -1,0 +1,20 @@
+ID,File,Category,Expected result,Notes
+U01,U01_RequestHeader.cls,Detection + AI Fix,"Determine if header is a supported taint source; if flagged, HTML-escape without altering other logic","If no issue: record rule scope, not automatic failure"
+U02,U02_CookieValue.cls,Detection + AI Fix,Determine whether cookie values are tracked; fix should preserve null safety,"Cookie name is a QA example, not a real session token"
+U03,U03_ChainedTransforms.cls,Detection + AI Fix,"Taint remains tracked through String.valueOf, trim and toLowerCase",
+U04,U04_ExecutableJs.cls,AI Fix security,Do not use escaping alone as authorization for executable JS; reject or strictly allowlist callback,Use only in a nonexecuting QA test environment
+U05,U05_HeaderValue.cls,Scope + compile check,Verify whether header injection is in scope; CRLF must not be accepted if a response header is actually written,ApexPages.getHeaders() is request headers; do NOT assume this writes response headers. Verify supported response-header API before treating as security test
+U06,U06_MultipleParams.cls,AI Fix,Both p1 and p2 encoded independently; no duplicate statement or omission,
+U07,U07_Ternary.cls,AI Fix,Sanitize tainted true branch while preserving false branch,
+U08,U08_MultiHop.cls,Detection + AI Fix,Determine whether inter-method taint is supported; preserve signature and behavior,A rule limited to intraprocedural analysis may not flag this
+U09,U09_SafeHtml.cls,Negative control,No violation expected for correctly escaped HTML string context,
+U10,U10_SafeJs.cls,Negative control,Check detector recognizes escaping in a JavaScript string; also manually assess HTML script embedding,escapeEcmaScript alone is not universally sufficient for inline HTML script context
+U11,U11_SafeUrlQuery.cls,Negative control,"No URL query injection violation expected; preserve path, only encode value",ResultPage is illustrative; navigation may need a real VF page
+U12,U12_VfController.cls,Detection + VF,Compare scanner result with safe VF outputText page; verify whether cross-file context is modeled,Controller alone cannot establish whether rendered output is safe
+U13,U13_TwoFixes.cls,Sequential fixes,"Apply first fix, commit, then apply second; both fixes remain correctly located",Do not merely generate two independent diffs; apply sequentially
+U14,U14_NestedGetter.cls,Regression,Getter extracted completely; braces and comments do not truncate snippet,"Similar pattern previously verified, this exact nested case not evidenced"
+U15,U15_ComplexStaticTrap.cls,AI Fix + compile,"Use transformed.escapeHtml4(), not String.escapeHtml4(transformed); compile check",
+U16,U16_NullDirect.cls,Runtime,Null input must not cause NullPointerException after fix,
+U17,U17_OpenRedirect.cls,AI Fix security,"Reject external and scheme-relative URLs, javascript: schemes and malformed paths; preserve allowed internal paths","Validate against /safe, //evil.example, https://evil.example, javascript:alert(1), /\evil.example"
+U18,U18_SafeTypedInteger.cls,Detection baseline,"Check whether typed value is treated as safe; invalid input may throw in original code, not necessarily an AI regression",This baseline intentionally has unsafe conversion exception behavior; do not mark AI failure unless introduced by AI
+U19,U19_UnsafeTypedId.cls,Known defect,Known CSN-188 regression: fix must validate ID and preserve navigation,"Included for tracking only, not new test requirement"
